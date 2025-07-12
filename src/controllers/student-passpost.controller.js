@@ -30,7 +30,13 @@ class StudentPassportController{
                 await db.query(`ALTER SEQUENCE student_passport_id_seq RESTART WITH 1`);
             }
     
-            const newPassport = (await db.query('INSERT INTO student_passport (number, pinfl, student_id) VALUES ($1, $2, $3) RETURNING *', [number, pinfl, student_id])).rows[0];
+            const newPassport = (await db.query(`
+                INSERT INTO student_passport 
+                    (number, pinfl, student_id) 
+                VALUES ($1, $2, $3) 
+                RETURNING *`
+                , [number, pinfl, student_id]
+            )).rows[0];
             if (!newPassport) return errorResponse(res, 'Error on creating passport info', 400);
     
             return successResponse(res, newPassport, 201);
